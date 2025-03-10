@@ -353,7 +353,7 @@ def interactive_mode():
         while True:
             mode = input("Выберите режим работы (ECB/CBC): ").strip().upper()
             if mode not in ["ECB", "CBC"]:
-                print("Ошибка: недопустимый режим (необходимо выбрать из списка: 'ECB', 'CBC'", end='\n\n')
+                print("Ошибка: недопустимый режим (необходимо выбрать из списка: [ECB], [CBC]", end='\n\n')
                 continue
             break
         is_cbc_mode = (mode == "CBC")
@@ -385,7 +385,7 @@ def interactive_mode():
         while True:
             source = input("Выберите источник данных (текст - [text], файл - [file]): ").strip().lower()
             if source not in ["t", "text", "f", "file"]:
-                print("Ошибка: некорректный выбор источника данных (необходимо выбрать из списка: 't', 'text', 'f', 'file')", end='\n\n')
+                print("Ошибка: некорректный выбор источника данных (необходимо выбрать из списка: [t], [text], [f], [file])", end='\n\n')
                 continue
             break
         is_file_source = source in ["f", "file"]
@@ -394,7 +394,7 @@ def interactive_mode():
         # указание конкретного источника
         while True:
             if is_file_source:
-                file_path = input("Введите путь к файлу: ").strip()
+                file_path = input("Введите путь к файлу (в бинарном формате): ").strip()
                 if not os.path.exists(file_path):
                     print("Ошибка: файл с данными не найден!", end='\n\n')
                     continue
@@ -413,7 +413,7 @@ def interactive_mode():
         while True:
             output = input("Куда вывести результат (консоль - [console], файл - [file]): ").strip().lower()
             if output not in ["c", "console", "f", "file"]:
-                print("Ошибка: некорректный выбор режима вывода данных (необходимо выбрать из списка: 'c', 'console', 'f', 'file')", end='\n\n')
+                print("Ошибка: некорректный выбор режима вывода данных (необходимо выбрать из списка: [c], [console], [f], [file])", end='\n\n')
             break
         is_file_output = output in ["f", "file"]
         # --------------------------------------------------------------------------------------------------------------
@@ -424,7 +424,7 @@ def interactive_mode():
 
         # Вывод результата
         if is_file_output:
-            file_path = input("Введите путь для сохранения: ").strip()
+            file_path = input("Введите путь для сохранения файла (в бинарном формате): ").strip()
             with open(file_path, "wb") as output_file:
                 output_file.write(result_data)
             print(f"Данные сохранены в '{file_path}'")
@@ -446,7 +446,7 @@ def arguments_mode():
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-e", "--encrypt", action="store_true", help="Операция шифрования")
+    group.add_argument("-e", "--encrypt", action="store_true", help="Операция зашифрования")
     group.add_argument("-d", "--decrypt", action="store_true", help="Операция расшифрования")
 
     parser.add_argument("-k", "--key", type=str, required=True, default="ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", help="256-битный ключ в hex-формате (64 символа)")
@@ -456,9 +456,9 @@ def arguments_mode():
 
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument("-t", "--text", type=str, help="Текст для обработки")
-    input_group.add_argument("-i", "--input", type=str, help="Входной файл")
+    input_group.add_argument("-i", "--input", type=str, help="Входной файл (в бинарном формате)")
 
-    parser.add_argument("-o", "--output", type=str, help="Выходной файл (по умолчанию: stdout)")
+    parser.add_argument("-o", "--output", type=str, help="Выходной файл (в бинарном формате)")
 
     args = parser.parse_args()
 
