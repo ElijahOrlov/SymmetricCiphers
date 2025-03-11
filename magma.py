@@ -427,7 +427,7 @@ def interactive_mode():
             file_path = input("Введите путь для сохранения файла (в бинарном формате): ").strip()
             with open(file_path, "wb") as output_file:
                 output_file.write(result_data)
-            print(f"\nЗаписано в файл [{output_file.name}] : {len(result_data)} байт")
+            print(f"\nЗаписано в файл [{output_file.name}]: {len(result_data)} байт")
         else:
             print(f"\n{('Зашифрованный' if is_encrypt_operation else 'Расшифрованный')} текст:")
             try:
@@ -496,7 +496,7 @@ def arguments_mode():
         if args.output:
             with open(args.output, "wb") as output_file:
                 output_file.write(result_data)
-            print(f"Записано в файл [{output_file.name}] : {len(result_data)} байт")
+            print(f"Записано в файл [{output_file.name}]: {len(result_data)} байт")
         else:
             try:
                 print(result_data.decode("utf-8"))
