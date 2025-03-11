@@ -337,9 +337,9 @@ def interactive_mode():
         # определение ключа шифрования (256 бит = 64 hex-символа)
         key = 0
         while True:
-            key_hex = input("Введите 256-битный ключ (64 hex-символа): ").strip()
+            key_hex = input("Введите ключ шифрования в hex-формате (64 символа): ").strip()
             if len(key_hex) != 64:
-                print("Ошибка: ключ должен быть 64 символа!", end='\n\n')
+                print("Ошибка: ключ шифрования должен быть длиной 64 hex-символа (256 бит)!", end='\n\n')
                 continue
             try:
                 key = int(key_hex, 16)
@@ -369,9 +369,9 @@ def interactive_mode():
                     print(f"Сгенерирован вектор инициализации (hex): {iv.hex()}")
             if not iv:
                 while True:
-                    iv_hex = input("Введите вектор инициализации (16 hex-символов): ").strip()
+                    iv_hex = input("Введите вектор инициализации в hex-формате (16 символов): ").strip()
                     if len(iv_hex) != 16:
-                        print("Ошибка: вектор инициализации должен быть быть длиной 16 hex-символов (8 байт)!", end='\n\n')
+                        print("Ошибка: вектор инициализации должен быть быть длиной 16 hex-символов (64 бит)!", end='\n\n')
                         continue
                     try:
                         iv = bytes.fromhex(iv_hex)
@@ -446,13 +446,13 @@ def arguments_mode():
     )
 
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("-e", "--encrypt", action="store_true", help="Операция зашифрования")
-    group.add_argument("-d", "--decrypt", action="store_true", help="Операция расшифрования")
+    group.add_argument("-e", "--encrypt", action="store_true", help="Операция зашифрования данных")
+    group.add_argument("-d", "--decrypt", action="store_true", help="Операция расшифрования данны")
 
-    parser.add_argument("-k", "--key", type=str, required=True, default="ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", help="256-битный ключ в hex-формате (64 символа)")
+    parser.add_argument("-k", "--key", type=str, required=True, default="ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff", help="Ключ шифрования в hex-формате (256 бит или 64 символа)")
 
     parser.add_argument("-m", "--mode", choices=["ecb", "cbc"], default="ecb", help="Режим шифрования (по умолчанию: ecb)")
-    parser.add_argument("-v", "--iv", type=str, help="Вектор инициализации для CBC режима (16 hex-символов)")
+    parser.add_argument("-v", "--iv", type=str, help="Вектор инициализации в hex-формате (64 бит или 16 символов)")
 
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument("-t", "--text", type=str, help="Текст для обработки")
@@ -465,7 +465,7 @@ def arguments_mode():
     try:
         # Обработка ключа (проверка на длину и преобразование из hex-строки в число)
         if len(args.key) != 64:
-            raise ValueError("Ключ должен быть длиной 256 бит (64 hex-символа)")
+            raise ValueError("Ключ шифрования должен быть длиной 64 hex-символа (256 бит)")
         key = int(args.key, 16)
 
         # Для CBC проверяем вектор инициализации
