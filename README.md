@@ -360,41 +360,41 @@ python magma.py -e -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfc
 #### Пример 2.3. Зашифрование данных из файла в режиме ECB, вывод в файл
 
 ```shell
-python magma.py -e -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m ecb -i input.txt -o encrypted_output.bin
+python magma.py -e -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m ecb -i decrypted_data.txt -o encrypted_output.bin
 ```
 
 **Описание параметров:**
 - `-e`: Операция шифрования.
 - `-k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff`: Ключ шифрования в hex-формате (256 бит или 64 символа).
 - `-m ecb`: Режим шифрования ECB.
-- `-i input.txt`: Путь к файлу с исходными данными для шифрования.
+- `-i decrypted_data.txt`: Путь к файлу с исходными данными для шифрования.
 - `-o encrypted_output.bin`: Путь для сохранения зашифрованных данных.
 
-**Примечание:** Результат шифрования исходных данных из файла `input.txt` будет сохранён в файл `encrypted_output.bin` в режиме ECB.
+**Примечание:** Результат шифрования исходных данных из файла `decrypted_data.txt` будет сохранён в файл `encrypted_output.bin` в режиме ECB.
 
 ---
 
 #### Пример 2.4. Расшифрование из файла в режиме ECB, вывод в файл
 
 ```shell
-python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m ecb -i encrypted_output.bin -o decrypted_output.txt
+python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m ecb -i encrypted_data.bin -o decrypted_output.txt
 ```
 
 **Описание параметров:**
 - `-d`: Операция расшифрования.
 - `-k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff`: Ключ шифрования в hex-формате (256 бит или 64 символа).
 - `-m ecb`: Режим шифрования ECB.
-- `-i encrypted_output.bin`: Путь к файлу с зашифрованными данными.
+- `-i encrypted_data.bin`: Путь к файлу с зашифрованными данными.
 - `-o decrypted_output.txt`: Путь для сохранения расшифрованных данных.
 
-**Примечание:** Результат расшифрованного текста из файла `encrypted_output.bin` будет записан в файл `decrypted_output.txt`.
+**Примечание:** Результат расшифрованного текста из файла `encrypted_data.bin` будет записан в файл `decrypted_output.txt`.
 
 ---
 
 #### Пример 2.5. Расшифрование из файла в режиме CBC с вектором инициализации, вывод в консоль
 
 ```shell
-python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m cbc -v 0123456789abcdef -i encrypted_output.bin
+python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m cbc -v 0123456789abcdef -i encrypted_data_cbc.bin
 ```
 
 **Описание параметров:**
@@ -402,7 +402,7 @@ python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfc
 - `-k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff`: Ключ шифрования в hex-формате (256 бит или 64 символа).
 - `-m cbc`: Режим шифрования CBC.
 - `-v 0123456789abcdef`: Вектор инициализации в hex-формате (64 бит или 16 символов).
-- `-i encrypted_output.bin`: Путь к файлу с зашифрованными данными.
+- `-i encrypted_data_cbc.bin`: Путь к файлу с зашифрованными данными.
 
 **Примечание:** Результат расшифрованного текста будет выведен в консоль.
 
@@ -411,7 +411,7 @@ python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfc
 #### Пример 2.6. Расшифрование данных из файла в режиме CBC с вектором инициализации, вывод в файл
 
 ```shell
-python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m cbc -v 0123456789abcdef -i encrypted_output.bin -o decrypted_output.txt
+python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff -m cbc -v 0123456789abcdef -i encrypted_data_cbc.bin -o decrypted_output.txt
 ```
 
 **Описание параметров:**
@@ -419,7 +419,7 @@ python magma.py -d -k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfc
 - `-k ffeeddccbbaa99887766554433221100f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff`: Ключ шифрования в hex-формате (256 бит или 64 символа).
 - `-m cbc`: Режим шифрования CBC.
 - `-v 0123456789abcdef`: Вектор инициализации в hex-формате (64 бит или 16 символов).
-- `-i encrypted_output.bin`: Путь к файлу с зашифрованными данными.
+- `-i encrypted_data_cbc.bin`: Путь к файлу с зашифрованными данными.
 - `-o decrypted_output.txt`: Путь для сохранения расшифрованных данных.
 
 **Примечание:** Результат расшифрованного текста будет записан в файл `decrypted_output.txt`.

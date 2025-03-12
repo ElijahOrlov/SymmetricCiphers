@@ -324,7 +324,7 @@ def interactive_mode():
     print("-------------------------------------------------------------------------------------------------", end='\n\n')
 
     try:
-        # режим работы шифра
+        # Выбор операции шифрования
         while True:
             operation = input("Выберите операцию шифрования (зашифровать - [encrypt], расшифровать - [decrypt]): ").strip().lower()
             if operation not in ["e", "encrypt", "d", "decrypt"]:
@@ -334,7 +334,7 @@ def interactive_mode():
         is_encrypt_operation = operation in ["e", "encrypt"]
         # --------------------------------------------------------------------------------------------------------------
 
-        # определение ключа шифрования (256 бит = 64 hex-символа)
+        # Определение ключа шифрования (256 бит или 64 hex-символа)
         key = 0
         while True:
             key_hex = input("Введите ключ шифрования в hex-формате (64 символа): ").strip()
@@ -349,7 +349,7 @@ def interactive_mode():
                 continue
         # --------------------------------------------------------------------------------------------------------------
 
-        # Выбор режима
+        # Выбор режима шифрования
         while True:
             mode = input("Выберите режим работы (ECB/CBC): ").strip().upper()
             if mode not in ["ECB", "CBC"]:
@@ -359,7 +359,7 @@ def interactive_mode():
         is_cbc_mode = (mode == "CBC")
         # --------------------------------------------------------------------------------------------------------------
 
-        # Для CBC запрашиваем вектор инициализации
+        # Для режима CBC запрашиваем вектор инициализации IV
         iv = None
         if is_cbc_mode:
             if is_encrypt_operation:
@@ -381,7 +381,7 @@ def interactive_mode():
                         continue
         # --------------------------------------------------------------------------------------------------------------
 
-        # выбор источника данных
+        # Выбор источника данных
         while True:
             source = input("Выберите источник данных (текст - [text], файл - [file]): ").strip().lower()
             if source not in ["t", "text", "f", "file"]:
@@ -391,15 +391,19 @@ def interactive_mode():
         is_file_source = source in ["f", "file"]
         # --------------------------------------------------------------------------------------------------------------
 
-        # указание конкретного источника
+        # Указание конкретного источника
         while True:
             if is_file_source:
-                file_path = input("Введите путь к файлу (в бинарном формате): ").strip()
+                file_path = input(f"Введите путь к файлу (в {('текстовом' if is_encrypt_operation else 'бинарном')} формате): ").strip()
                 if not os.path.exists(file_path):
                     print("Ошибка: файл с данными не найден!", end='\n\n')
                     continue
-                with open(file_path, "rb") as data_file:
+                file_read_mode = "r" if is_encrypt_operation else "rb"
+                file_encoding = "utf8" if is_encrypt_operation else None
+                with open(file_path, mode=file_read_mode, encoding=file_encoding) as data_file:
                     data = data_file.read()
+                    if is_encrypt_operation:
+                        data = data.encode("utf-8")
             else:
                 text = input("Введите текст: ").strip()
                 if not text:
@@ -409,7 +413,7 @@ def interactive_mode():
             break
         # --------------------------------------------------------------------------------------------------------------
 
-        # выбор режима вывода данных
+        # Выбор режима вывода данных
         while True:
             output = input("Куда вывести результат (консоль - [console], файл - [file]): ").strip().lower()
             if output not in ["c", "console", "f", "file"]:
@@ -425,7 +429,9 @@ def interactive_mode():
         # Вывод результата
         if is_file_output:
             file_path = input("Введите путь для сохранения файла (в бинарном формате): ").strip()
-            with open(file_path, "wb") as output_file:
+            file_write_mode = "wb" if is_encrypt_operation else "w"
+            file_encoding = None if is_encrypt_operation else "utf8"
+            with open(file_path, mode=file_write_mode, encoding=file_encoding) as output_file:
                 output_file.write(result_data)
             print(f"\nЗаписано в файл [{output_file.name}]: {len(result_data)} байт")
         else:
@@ -456,9 +462,9 @@ def arguments_mode():
 
     input_group = parser.add_mutually_exclusive_group(required=True)
     input_group.add_argument("-t", "--text", type=str, help="Текст для обработки")
-    input_group.add_argument("-i", "--input", type=str, help="Входной файл (в бинарном формате)")
+    input_group.add_argument("-i", "--input", type=str, help="Входной файл (зашифрование: в текстовом формате, расшифрование: в бинарном формате)")
 
-    parser.add_argument("-o", "--output", type=str, help="Выходной файл (в бинарном формате)")
+    parser.add_argument("-o", "--output", type=str, help="Выходной файл (зашифрование: в бинарном формате, расшифрование: в текстовом формате)")
 
     args = parser.parse_args()
 
@@ -479,12 +485,18 @@ def arguments_mode():
 
         # Получение входных данных
         if args.text:
+            if not args.text:
+                raise ValueError("Текст для обработки не указан!")
             data = args.text.encode("utf-8") if args.encrypt else bytes.fromhex(args.text)
         elif args.input:
             if not os.path.exists(args.input):
                 raise ValueError(f"Файл с данными не найден")
-            with open(args.input, "rb") as data_file:
+            file_read_mode = "r" if args.encrypt else "rb"
+            file_encoding = "utf8" if args.encrypt else None
+            with open(args.input, mode=file_read_mode, encoding=file_encoding) as data_file:
                 data = data_file.read()
+                if args.encrypt:
+                    data = data.encode("utf-8")
         else:
             raise ValueError("Текст для обработки или Входной файл не указаны")
 
@@ -494,7 +506,9 @@ def arguments_mode():
 
         # Вывод результата
         if args.output:
-            with open(args.output, "wb") as output_file:
+            file_write_mode = "wb" if args.encrypt else "w"
+            file_encoding = None if args.encrypt else "utf8"
+            with open(args.output, mode=file_write_mode, encoding=file_encoding) as output_file:
                 output_file.write(result_data)
             print(f"Записано в файл [{output_file.name}]: {len(result_data)} байт")
         else:
@@ -503,7 +517,7 @@ def arguments_mode():
             except UnicodeDecodeError:
                 print(result_data.hex())
     except Exception as ex:
-        print(f"Ошибка: {ex}", file=sys.stderr)
+        print(f"Ошибка: {ex}", file=sys.stderr, end='\n\n')
         sys.exit(1)
 
 def main():
